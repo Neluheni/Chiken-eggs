@@ -8,18 +8,83 @@
   
   <!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supabase Orders Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    #message {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
 
-  <div>
-<h1> Make ordes Chat to AI</h1>
-<!-- Text Instruction -->
-<p style="font-family: Arial, sans-serif; font-size: 16px; margin-bottom: 10px;">
-  👉 Click the <strong>eggs  icon</strong> to chat and order!
-</p>
+  <h2 style="text-align:center;">Submit Order to Supabase</h2>
 
-<!-- JotForm Chat Widget Embed -->
-<script
-  src='https://cdn.jotfor.ms/agent/embedjs/01972001d7317a7eb951b87cf76bcc2ad8bb/embed.js?skipWelcome=1&maximizable=1'>
-</script>
+  <form id="orderForm">
+    <input type="text" id="some_column" placeholder="Some Value" required />
+    <input type="text" id="other_column" placeholder="Other Value" required />
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="message"></div>
+
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://xiiiuqfatgfmuboaqvss.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpaWl1cWZhdGdmbXVib2FxdnNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MTM3MjEsImV4cCI6MjA2NTM4OTcyMX0.Eo1-BbdPyoBSpskTaheWactH7q0he-EJa1n-v_Cg2xQ';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const form = document.getElementById('orderForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const someValue = document.getElementById('some_column').value;
+      const otherValue = document.getElementById('other_column').value;
+
+      const { data, error } = await supabase
+        .from('Orders')
+        .insert([{ some_column: someValue, other_column: otherValue }])
+        .select();
+
+      if (error) {
+        console.error('Insert error:', error);
+        message.innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
+      } else {
+        console.log('Insert success:', data);
+        message.innerHTML = `<span style="color: green;">✅ Order submitted successfully!</span>`;
+        form.reset();
+      }
+    });
+  </script>
+
+</body>
+</html>
+
 
   </div>
   
